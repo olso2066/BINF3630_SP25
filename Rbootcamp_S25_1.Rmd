@@ -1,0 +1,101 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### R bootcamp Bioinformatics - Spring 2025
+
+Objectives of this notebook: 
+
+- use the Console in RStudio
+- use arithmetic and relational operators
+- understand the concept of assignment and assign variables to values
+- use and write chunks
+
+#### Arithmetic operators
+You can use R to do simple calculations. For example, you can enter the **expression** 4 + 4 (or 4+4). An expression is a piece of code that evaluates to a value. R is an interpreted language, meaning the expressions entered are translated into machine code. The following steps occur:
+
+1) R recognizes the expression as an arithmetic operation 
+2) R is an interpreted language, so any code we write will be translated to lower-level bytecode by the R interpreter.
+3) The computation happens in the processor where the CPU loads the two numbers and the CPU executes the addition instructions. The result is stored.
+4) The computed value is passed back and displayed
+
+In the Console, write expressions using the +, -, *, / , ^, %% (modulus or remainder), and %/% (integer division)
+
+#### Relational Operators and Logical Expressions
+To compare two values, you can write **logical expressions** using **relational** operators. For example, you can write the expression 4 > 5. Relational expression evaluate to TRUE or FALSE. These are fundamental for if-statements, loops, and logical filtering
+
+== 
+!= 
+>
+<
+<=
+>=
+
+Write relational expressions in the Console
+
+#### Assignment
+To this point, the result of every expression we've written is stored, but not in a way that we can access it for further calculations. To store the result of an expression, we must assign that expression to a variable.
+
+For example, a = 4 + 4, is read "a is assigned to 4 + 4".
+
+Variable names have rules:
+
+- must start with a letter (not a number or underscore)
+- is case sensitive
+- cannot be an R keyword
+- can be in snake_case or CamelCase or some CombinationOf_both
+
+We could run all of our code in the Console, but it is better to write it in a chunk. The code in the Console is harder to access and edit. In the chunk below, write a series of arithmetic expressions where each expression is assigned to a variable. 
+
+```{r}
+# A chunk is where we write R code
+# Anything following a hashtag is ignored by the R interpreter and is only for a human reader
+# To run the code in a chunk, either click on the green play arrow in the upper right corner of the chunk or type Cmd + Return or Cntl + Enter on a PC
+
+
+## What happens when you run this chunk? 
+a = 4 + 4
+print(a)
+```
+
+```{r}
+### Assignment
+a = 9^2
+b = 1%%3
+b = a
+
+# After these three lines of code are run, what are the values of a and b? Explain why.
+```
+
+- On a Mac, a new chunk is added by Cmd + Option + i
+- On a PC, Ctrl + Alt + i
+
+##### Practice
+
+1) In a new chunk, assign the results of two expressions to two variables. Use a relational operator to compare the two values
+
+2) In the chunks below, follow the prompts in the comments
+```{r}
+# This line generates list of random numbers, drawn from a uniform distribution
+rn_list = runif(n = 10, min = 0, max = 1)
+print(rn_list)
+# Given the output, describe what is happening
+```
+
+```{r}
+# Use a logical statement to print numbers (i) greater than 0.5
+
+# For each item (i) in the list of random numbers (rn_list)
+for (i in rn_list) {
+  # if the value i is greater then 0.5, print it
+  if (# replace with logical statement) {
+  print(i)
+  }
+}
+
+# This will give an error if you don't replace the text in the parentheses after the if
+```
+
+
+

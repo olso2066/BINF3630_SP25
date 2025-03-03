@@ -1,0 +1,43 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+# list all of the required packages here
+list.of.packages <- c("tidyverse", "factoextra", "ggrepel", "here")
+
+# install packages if they are not already installed
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+# load all required libraries
+invisible(lapply(list.of.packages, library, character.only = TRUE))
+```
+
+
+```{r}
+data(iris)
+log.iris <- log(iris[, 1:4])
+iris.species <- iris[, 5]
+par(mfrow = c(2, 2))
+hist(log.iris$Sepal.Length, breaks = 20)
+hist(log.iris$Sepal.Width, breaks = 20)
+hist(log.iris$Petal.Length, breaks = 20)
+hist(log.iris$Petal.Width, breaks = 20)
+```
+
+```{r}
+ir.pca <- prcomp(log.iris, center = TRUE, scale = TRUE)
+print(ir.pca)
+```
+```{r}
+pca_plot <- fviz_pca_ind(ir.pca,
+                         geom.ind = "point",
+                         geom.ind.size = 8,
+                         title = "PCA Plot", 
+                         habillage = iris.species)
+pca_plot
+```
+

@@ -1,0 +1,159 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### R bootcamp Bioinformatics - Spring 2025
+
+Objectives of this notebook: 
+
+- install and load external packages
+- import, format, select data for analyses
+- make graphs with ggplot
+
+#### Installing and loading external packages (aka libraries)
+In the lower right, you'll see a tab called "Packages". Here you can browse what you already have installed. You can select "Install" and install the package manually. Alternatively, you can edit and run the code below.
+```{r}
+# list all of the required packages here
+list.of.packages <- c("tidyverse", "factoextra", "ggrepel", "here")
+
+# install packages if they are not already installed
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+# load all required libraries
+invisible(lapply(list.of.packages, library, character.only = TRUE))
+```
+Once installed, you can read the documentation as you would any other library
+
+#### Importing data
+```{r}
+# Load the data files for the sample metadata, 
+# log transformed imputed metabolite values,
+# and chemical annotation of measured metabolites
+
+meta_all <- read_csv(
+  "Complete_Data_SampleMetadata.csv",
+  show_col_types = FALSE
+)
+
+log_transformed_metabolites <- read_csv(
+  "Complete_Data_LogTransformedData.csv",
+  show_col_types = FALSE
+)
+
+chem_annotation <- read_csv(
+  "Complete_Data_ChemMetaData.csv",
+  show_col_types = FALSE
+)
+
+```
+
+#### Viewing and manipulating data types
+```{r}
+summary(meta_all)
+```
+
+#### Merging datasets
+We can join two datasets with the left_join() function in the dplyr package
+```{r}
+# Join the sample metadata with the log transformed metabolite values into one dataset
+log_transformed_data <- left_join(x = meta_all,
+                       y = log_transformed_metabolites,
+                       by = "PARENT_SAMPLE_NAME")
+```
+
+#### Adding a column
+```{r}
+log_transformed_data$new_column <- "expression"
+```
+
+
+#### Selecting analyses
+```{r}
+### Let's only look samples from the GRNHS (greenhouse) ENVIORNMENT
+# Write a line of code to subset the log_transformed_data so that only
+# samples from the GRNHS are in the new dataframe
+filtered_data <- log_transformed_data[log_transformed_data$ENVIRONMENT=="GRNHS",]
+```
+
+
+#### Initial data visualization
+Next, we will view samples with Principal Component Analysis
+```{r}
+# Subset the data to remove the metadata (leave only the metabolite numbers)
+# This is required for PCA plotting
+metabolite_data <- filtered_data[,ncol(chem_annotation):length(filtered_data)]
+
+# Remove rows with missing values
+metabolite_data <- na.omit(metabolite_data)
+# Remove constant columns
+metabolite_data <- metabolite_data[, apply(metabolite_data, 2, function(x) var(x) != 0)]
+
+# Calculate a Principal Component Analysis on the cleaned metabolite data
+pca_result <- prcomp(metabolite_data, 
+                     center = TRUE, 
+                     scale. = TRUE)
+
+# Plot the PCA and color it based on genotype
+pca_plot <- fviz_pca_ind(pca_result,
+                         geom.ind = "point",
+                         geom.ind.size = 8,
+                         repel = TRUE, # Use text repulsion for labels
+                         title = "PCA Plot", 
+                         habillage = filtered_data$GENOTYPE)#  +
+            #scale_colour_manual(values = custom_colors_geno)
+pca_plot
+
+```
+
+#### Customization
+```{r}
+# Define a color palette and shapes for GENOTYPE
+custom_colors_geno <- c("Aspeciosa" = "#fa3860",  # Dark red
+                   "Asyriaca" = "#86b5da",  # Medium blue
+                   "Hybrid" = "#bd96e0")  # Purple
+shape_mapping <- c("Hybrid" = 16, "Asyriaca" = 17, "Aspeciosa" = 15)
+
+
+```
+
+```{r}
+pca_plot <- fviz_pca_ind(pca_result,
+                         geom.ind = "point",
+                         geom.ind.size = 8,
+                         repel = TRUE, # Use text repulsion for labels
+                         title = "PCA Plot", 
+                         addEllipses = TRUE,
+                         habillage = filtered_data$GENOTYPE,
+                         palette = custom_colors_geno) +
+            scale_colour_manual(values = custom_colors_geno)
+pca_plot
+?fviz_pca_ind
+```
+
+
+For today--- 
+```{r}
+## Make a histogram of two chemicals 
+
+```
+
+```{r}
+## Make a scatterplot of two of the chemicals, colored by GENOTYPE
+
+```
+
+```{r}
+## Make a new column in the dataset which is the ratio of the two chemicals
+# Log transform that ratio
+
+```
+
+```{r}
+## Find another plot and customize it
+
+```
+
+
+#### 

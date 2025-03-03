@@ -1,0 +1,189 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Sequence Alignment
+
+### Objectives
+
+- install and load packages from Bioconductor
+- manipulate the parameters of global and local alignments and identify the changes
+- download sequences from online databases, parse, align, and save to a file
+
+
+#### We will use packages from Bioconductor
+From their website, "The Bioconductor project aims to develop and share open source software for precise and repeatable analysis of biological data. We foster an inclusive and collaborative community of developers and data scientists." 
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+### pwalign 
+BiocManager::install("pwalign")
+library(pwalign)
+
+
+install.packages("rentrez")
+library(rentrez)
+```
+
+
+#### Global alignment
+
+```{r}
+# Example with two short DNA sequences
+s1 <- DNAString("ACTTCACCAGCTCCCTGGCGGTAAGTTGATCAAAGGAAACGCAAAGTTTTCAAG")
+s2 <- DNAString("GTTTCACTACTTCCTTTCGGGTAAGTAAATATATAAATATATAAAAATATAATTTTCATC")
+
+# Set up the nucleotide matrix
+mat <- nucleotideSubstitutionMatrix(match = 1, mismatch = -3, baseOnly = TRUE, symmetric = TRUE)
+
+# Global Alignment
+globalAlign1 <-
+    pairwiseAlignment(s1, s2, substitutionMatrix = mat,
+                      gapOpening = 5, gapExtension = 2)
+
+globalAlign2 <-
+    pairwiseAlignment(s1, s2, substitutionMatrix = mat,
+                      gapOpening = 5, gapExtension = 2)
+
+globalAlign1
+globalAlign2
+```
+
+##### Question 1
+
+Modify the parameters of the models above and make a note of how it changes. For example, if you increase the gapOpening to 10, one, not two gaps are introduced into the alignment. How is the alignment score affected?
+
+##### Question 2
+
+Choose another parameter and describe its affect on the alignment and the scores. 
+
+#### Local alignment
+
+```{r}
+localAlign <-
+pairwiseAlignment(s1, s2, type = "local", substitutionMatrix = mat,
+                      gapOpening = 5, gapExtension = 2)
+
+localAlign
+```
+
+##### Question 3
+
+Compare the global and local alignments with the same matrix and same gap penalties. Describe the differences.
+
+
+#### Comparing substitution matrices 
+
+```{r}
+aa1 <- AAString("HXBLVYMGCHFDCXVBEHIKQZ")
+aa2 <- AAString("QRNYMYCFQCISGNEYKQN")
+
+# Align the sequences with the BLOSUM62 substitution matrix
+### This example has a small gap penalty
+pairwiseAlignment(aa1, aa2, substitutionMatrix="BLOSUM62",
+                            gapOpening=3, gapExtension=1)
+
+## See how the gap penalty influences the alignment:
+pairwiseAlignment(aa1, aa2, substitutionMatrix="PAM30",
+                            gapOpening=3, gapExtension=1)
+
+
+```
+
+### Accessing data from NCBI 
+
+#### Getting data from NCBI with rentrez
+
+```{r}
+# Find the list of databases
+entrez_dbs()
+```
+
+#### Download sequences  of iridoid synthase
+
+```{r}
+# iridoid synthase
+
+nucIDs <- c("AY574950.1","KJ873882.1")
+linked_seq_ids <- entrez_link(dbfrom="nucleotide", id=nucIDs, db="nuccore")
+linked_transripts <- linked_seq_ids$links$nuccore_nuccore_mrnaonly
+head(linked_transripts)
+
+
+all_recs <- entrez_fetch(db="nuccore", id=linked_transripts, rettype="fasta")
+class(all_recs)
+cat(strwrap(substr(all_recs, 1, 5000)), sep="\n")
+write(all_recs, file="my_transcripts.fasta")
+```
+#### Parsing the records
+Here's an example of manual parsing of all_recs
+```{r}
+## Once you have the records, you can parse them 
+
+# Sample input (truncated for readability)
+raw_text <- all_recs
+
+# Remove leading '[1] ' if present
+raw_text <- gsub("^\\[1\\] ", "", raw_text)
+
+# Split by ">" to separate sequences
+seq_entries <- unlist(strsplit(raw_text, "\n>"))  # Keeps first entry's >
+
+# Initialize storage
+sequence_data <- data.frame(Accession = character(), Description = character(), Sequence = character(), stringsAsFactors = FALSE)
+
+# Process each sequence entry
+for (entry in seq_entries) {
+  # Remove leading ">" if present
+  entry <- gsub("^>", "", entry)
+  
+  # Extract the first line as header
+  lines <- unlist(strsplit(entry, "\n"))
+  header <- lines[1]
+  
+  # Extract accession number and description
+  accession <- sub(" .*", "", header)  # First word in the header
+  description <- sub("^[^ ]* ", "", header)  # Everything after the accession number
+  
+  # Concatenate the sequence lines, removing any whitespace
+  sequence <- paste(lines[-1], collapse = "")
+
+  # Append to data frame
+  sequence_data <- rbind(sequence_data, data.frame(Accession = accession, Description = description, Sequence = sequence, stringsAsFactors = FALSE))
+}
+
+# Display the parsed output
+print(sequence_data)
+
+
+
+```
+
+#### Align the sequences and write to a file
+
+```{r}
+# get the two sequences
+seq1 <- sequence_data$Sequence[1]
+seq2 <- sequence_data$Sequence[2]
+
+# set the substitution matrix
+mat <- nucleotideSubstitutionMatrix(match = 1, mismatch = 0, baseOnly = TRUE)
+globalAlign <-
+    pairwiseAlignment(seq1, seq2, substitutionMatrix = mat,
+                      gapOpening = 5, gapExtension = 2)
+globalAlign
+
+# write alignment to a text file
+writePairwiseAlignments(globalAlign, "5-beta-reductase.aln")
+
+```
+
+#### Homework - Choose a gene of interest. Identify the nucleotide IDs for two orthologs of those genes and make a global pairwise alignment https://www.ncbi.nlm.nih.gov/ 
+
+# Submit your new alignment to Canvas
+
+
+

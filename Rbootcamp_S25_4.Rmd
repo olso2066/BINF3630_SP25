@@ -1,0 +1,196 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### R bootcamp Bioinformatics - Spring 2025
+
+Objectives of this notebook: 
+
+- interpret if and for statements and custom functions
+- play around with the Sanford Health Database
+
+
+#### Branching control
+
+- if statements do something if the conditional is met (is TRUE)
+- if else statements do something if the conditional is met and something else if the conditional is not met
+```{r}
+# Do something if a conditional is met (evaluates to TRUE)
+#  if(conditional){
+#   statement
+#  }
+
+a <- 5
+
+if(a>2 ){
+  print("greater than 2")
+} 
+
+
+# Do something if a conditional is met and do something else if the conditional is not met
+#  if (test_expression1) {
+#  statement1
+#  } else (test_expression2) {
+#  statement2
+#  }
+
+b <- 1
+
+if(b > 2 ){
+  print("greater than 2")
+} else {
+  print("less than 2")
+}
+
+
+```
+
+
+Write a set of expressions that test whether a person is eligible to run for US Congress
+```{r}
+# if (test_expression1) {
+# statement1
+# } else if ( test_expression2) {
+# statement2
+# } else if ( test_expression3) {
+# statement3
+# } else {
+# statement4
+# }
+```
+
+
+
+
+#### for loops
+
+```{r}
+# 
+df <- c(1,2,3,4,5,6)
+for (i in df){
+  print(i)
+  print("next")
+}
+
+
+```
+#### Nested control
+
+Combine for and if statements
+```{r}
+# Describe the following code to your neighbor
+
+df <- c(1,2,3,4,5,6)
+
+for (i in df) {
+  if (i%%2==0) {
+    print(paste(i, "meets the condition"))
+  } else {
+    print(paste(i, "does not meet the condition"))
+    }
+}
+
+```
+#### Let's plot everything in ggplot
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+# Import the Sanford Data Collaborative dataset
+sanfordData <- read.csv("Sanford_Data_Collaborative_Teaching_DataSet.csv")
+```
+
+#### Clean up the data
+```{r}
+# Convert BMI, AGE, AIC, Scheduled Clinic Visits, and missed Clinic Visits  column to numeric and remove NA cases
+sanfordData$BMI <- as.numeric(as.character(sanfordData$BMI))
+sanfordData$Age <- as.numeric(as.character(sanfordData$Age))
+sanfordData$A1C <- as.numeric(as.character(sanfordData$A1C))
+sanfordData$ScheduledClinicVisits <- as.numeric(as.character(sanfordData$ScheduledClinicVisits))
+sanfordData$MissedClinicVisits <- as.numeric(as.character(sanfordData$MissedClinicVisits))
+
+# Convert Hypertension, Vascular Disease, and Diabetes to Factors
+sanfordData$Hypertension <- as.factor(sanfordData$Hypertension)
+sanfordData$VascularDisease <- as.factor(sanfordData$VascularDisease)
+sanfordData$Diabetes <- as.factor(sanfordData$Diabetes)
+sanfordData$Status <- as.factor(sanfordData$Status)
+
+#Remove any rows with values of NA
+sanfordData <- sanfordData[!is.na(sanfordData$BMI),]
+sanfordData <- sanfordData[!is.na(sanfordData$Age),]
+sanfordData <- sanfordData[!is.na(sanfordData$ScheduledClinicVisits),]
+sanfordData <- sanfordData[!is.na(sanfordData$MissedClinicVisits),]
+
+# Remove Outliers for BMI
+sanfordData <- sanfordData[sanfordData$BMI < 100,]
+summary(sanfordData)
+```
+
+#### Subset the data
+```{r}
+# Take a random subsample of 100 rows
+subsample <- sanfordData %>% sample_n(10000)
+```
+
+
+#### Simple regression
+We can do a simple regression for continuous data
+```{r}
+# What is the relationship between BMI and age?
+p <- ggplot(subsample, aes(Age, BMI, color = Sex))
+p + geom_point()
+
+# Is BMI significantly correlated with age?
+lm0 <- lm(formula = BMI ~ Age, data=subsample)
+summary(lm0)
+```
+
+```{r}
+# and this is a much nicer way to view the relationship
+q <- ggplot(subsample)
+q + geom_smooth(mapping = aes(x= Age, y = BMI, color = Sex), level = 0.95)
+```
+
+#### Custom Function
+```{r}
+# Calculate the average smoking age by sex
+
+calculate_smoking_by_age_sex <- function(data, age_breaks, age_labels) {
+  # Ensure the number of labels matches the number of intervals
+  if (length(age_labels) != (length(age_breaks) - 1)) {
+    stop("Number of age labels must be one less than the number of age breaks")
+  }
+  
+  data %>%
+    mutate(AgeGroup = cut(Age, 
+                          breaks = age_breaks, 
+                          labels = age_labels,
+                          right = TRUE)) %>%
+    group_by(AgeGroup, Sex) %>%  # Now grouped by both AgeGroup and Sex
+    summarize(AverageSmokingStatus = mean(SmokingStatus, na.rm = TRUE), .groups = "drop") %>%
+    arrange(AgeGroup, Sex)  # Ensure correct ordering
+}
+
+# Example usage with custom age groups
+age_breaks <- c(18, 30, 40, 50, 60, 70, Inf)
+age_labels <- c("18-29", "30-39", "40-49", "50-59", "60-69", "70+")
+
+smoking_summary <- calculate_smoking_by_age_sex(sanfordData, age_breaks, age_labels)
+print(smoking_summary)
+
+
+```
+
+
+```{r}
+ss <- ggplot(sanfordData)
+ss + geom_smooth(mapping = aes(x= Age, y = SmokingStatus, color = Sex), level = 0.95)
+```
+
+```{r}
+vasc.dis <- ggplot(sanfordData, aes(VascularDisease, Age, colour = Sex))
+vasc.dis + geom_violin()
+```
