@@ -5,14 +5,14 @@ Data and analyses for Bioinformatics Spring 2025
 
 | SampleIdentifier | Tissues | Treatment | Genotype |
 |-------------|------------|-------------|------------|
-| mdg_017 | Root and Leaf| Watered and Drought | Hybrid |
-| mdg_018 | Root and Leaf | Watered and Drought | Hybrid |
-| mdg_019 | Root and Leaf | Watered and Drought | Hybrid |
-| mdg_020 | Root and Leaf | Watered and Drought | Hybrid |
-| mdg_021 | Root and Leaf | Watered and Drought | Hybrid |
-| mdg_021 | Root | Watered and Drought | Hybrid |
-| mdg_023 | Root and Leaf | Watered and Drought | Hybrid |
-| mdg_024 | Root and Leaf | Watered and Drought | Hybrid |
+| mdg_017 | Root and Leaf| Watered | Hybrid |
+| mdg_018 | Root and Leaf | Watered | Hybrid |
+| mdg_019 | Root and Leaf | Watered | Hybrid |
+| mdg_020 | Root and Leaf | Watered | Hybrid |
+| mdg_021 | Root and Leaf | Drought | Hybrid |
+| mdg_021 | Root | Drought | Hybrid |
+| mdg_023 | Root and Leaf | Drought | Hybrid |
+| mdg_024 | Root and Leaf | Drought | Hybrid |
 
 **Make a directory that's for your work**
 ``` bash
