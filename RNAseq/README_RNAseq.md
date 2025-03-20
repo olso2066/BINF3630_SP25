@@ -1,8 +1,6 @@
 # BINF3630_SP25
 Data and analyses for Bioinformatics Spring 2025
 
-Directories
-* Rbootcamp
-* RNAseq
+### Data and code (.Rmd files, commandline, etc..)
 
 
