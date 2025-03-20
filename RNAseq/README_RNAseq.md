@@ -1,7 +1,7 @@
 # BINF3630_SP25
 Data and analyses for Bioinformatics Spring 2025
 
-Choose a sample 
+**Choose a sample **
 
 | SampleIdentifier | Tissues | Treatment | Genotype |
 |-------------|------------|-------------|------------|
@@ -10,6 +10,7 @@ Choose a sample
 | mdg_019 | Root and Leaf | Watered and Drought | Hybrid |
 | mdg_020 | Root and Leaf | Watered and Drought | Hybrid |
 | mdg_021 | Root and Leaf | Watered and Drought | Hybrid |
+| mdg_021 | Root | Watered and Drought | Hybrid |
 | mdg_023 | Root and Leaf | Watered and Drought | Hybrid |
 | mdg_024 | Root and Leaf | Watered and Drought | Hybrid |
 
