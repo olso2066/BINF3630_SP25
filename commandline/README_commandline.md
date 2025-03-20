@@ -20,6 +20,9 @@ cd $HOME
 ### go up one directory
 cd ..
 
+### create a file with nano
+nano filename.txt
+
 ### 
 
 #mkdir (make directory): Creates a new directory.
