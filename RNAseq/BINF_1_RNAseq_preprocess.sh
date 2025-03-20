@@ -32,7 +32,7 @@ mkdir -p "$OUTPUT_DIR"
 SAMPLE_R1="$INPUT_DIR/mdg_017_L_S17_L004_R1_001.fastq.gz"
 SAMPLE_R2="$INPUT_DIR/mdg_017_L_S17_L004_R2_001.fastq.gz"
 
-Step 1: Subsample and trim with fastp
+# Step 1: Subsample and trim with fastp
 fastp -i "$SAMPLE_R1" -I "$SAMPLE_R2" \
       -o "$OUTPUT_DIR/out17.R1.fq.gz" -O "$OUTPUT_DIR/out17.R2.fq.gz" \
       --max_reads 10000 \
