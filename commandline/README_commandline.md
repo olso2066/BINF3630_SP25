@@ -20,7 +20,21 @@ cd $HOME
 ### go up one directory
 cd ..
 
+### create a file with nano
+nano filename.txt
+
 ### 
 
+#mkdir (make directory): Creates a new directory.
+#rmdir (remove directory): Deletes an empty directory.
+#rm (remove): Deletes files or directories (use with caution!).
+#touch (create): Creates an empty file.
+#mv (move): Moves or renames files and directories.
+#cp (copy): Copies files and directories.
+#cat (concatenate): Displays the contents of a file.
+#grep (global regular expression print): Searches for patterns in files.
+#man (manual): Displays the manual page for a command.
+#clear: Clears the terminal display.
+#whoami: Displays the current username. 
 
 ```
