@@ -10,7 +10,7 @@ Data and analyses for Bioinformatics Spring 2025
 | mdg_019 | Root and Leaf | Watered | Hybrid |
 | mdg_020 | Root and Leaf | Watered | Hybrid |
 | mdg_021 | Root and Leaf | Drought | Hybrid |
-| mdg_021 | Root | Drought | Hybrid |
+| mdg_022 | Root | Drought | Hybrid |
 | mdg_023 | Root and Leaf | Drought | Hybrid |
 | mdg_024 | Root and Leaf | Drought | Hybrid |
 
