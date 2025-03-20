@@ -5,7 +5,7 @@ Choose a sample
 
 | SampleIdentifier | Tissues | Treatment | Genotype |
 |-------------|------------|-------------|------------|
-| mdg_017 | Root| Watered and Drought | Hybrid |
+| mdg_017 | Root and Leaf| Watered and Drought | Hybrid |
 | mdg_018 | Root and Leaf | Watered and Drought | Hybrid |
 | mdg_019 | Root and Leaf | Watered and Drought | Hybrid |
 | mdg_020 | Root and Leaf | Watered and Drought | Hybrid |
@@ -14,12 +14,7 @@ Choose a sample
 | mdg_024 | Root and Leaf | Watered and Drought | Hybrid |
 
 ``` bash
-# location of files
-/anvil/projects/x-bio250083/RNAseq_mdg
-
-```
-
-``` bash
-
+# go to the location of files
+cd /anvil/projects/x-bio250083/RNAseq_mdg
 ```
 
