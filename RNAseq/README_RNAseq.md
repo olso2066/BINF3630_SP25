@@ -17,50 +17,44 @@ Choose a sample
 ``` bash
 # go to the project folder
 cd /anvil/projects/x-bio250083/
-
 # make a directory based on your ACCESS user name
 mkdir -p YOURUSERNAME
-
 # go into that folder
 cd YOURUSERNAME
 ```
+
+**Editing, copying, and running scripts**
 ``` bash
 # Run an example script
-
 # Copy an example script
 cp /anvil/projects/x-bio250083/examples/example.sh /anvil/projects/x-bio250083/YOURUSERNAME
-
 # check to see it's there
 ls
-
 # check its contents
 less example.sh
-
 # edit it
 nano example.sh
-
 # run it
 sbatch example.sh
-
 # while it's running, check it's status and the status of any other jobs you're running
 squeue -u$USER
 ```
 
+**Preparing the preprocessing script for your sample**
 ``` bash
 cd /anvil/projects/x-bio250083/YOURUSERNAME
-
 # add the first script - open BINF_1_RNAseq_preprocess.sh and copy its contents
 nano BINF_1_RNAseq_preprocess.sh
-
 # paste in the code
 # IMPORTANT! - make the necessary changes for your files and directories!!!
 ```
 
+**Running the preprocessing script**
 ``` bash
 # running the script
 sbatch BINF_1_RNAseq_preprocess.sh
 ```
 
-** Repeat for each 
+**Repeat for each BINF_x script**
 
 
