@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=2:00:00
+#SBATCH --time=0:30:00
 #SBATCH --job-name=blast
 #SBATCH --output=blast_%a.out
 #SBATCH --error=blast_%a.err
