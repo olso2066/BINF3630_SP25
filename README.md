@@ -2,11 +2,16 @@
 Data and analyses for Bioinformatics Spring 2025 at Augustana University
 
 🌱 **Welcome!** 🦋
-Here you will find a set of scripts and analyses - this is very much a work-in-progress
 
 **Directories**
 
 * Rbootcamp
+  - A set of scripts to introduce R
+
 * RNAseq
+  - The processing, annotation, and assembly of RNAseq data
+  - All analyses are done on a supercomputer
+ 
+* Command line basics 
 
 
