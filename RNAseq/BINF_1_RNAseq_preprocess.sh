@@ -38,17 +38,15 @@ cd "$OUTPUT_DIR"
 cp "$SAMPLE_R1" "$OUTPUT_DIR"
 cp "$SAMPLE_R2" "$OUTPUT_DIR"
 
-# Define sample names
-# change to your sample names ####
-# SAMPLE_R1="$INPUT_DIR/mdg_017_L_S17_L004_R1_001.fastq.gz"
-# SAMPLE_R2="$INPUT_DIR/mdg_017_L_S17_L004_R2_001.fastq.gz"
-
 # Step 1: Subsample and trim with fastp
 fastp -i "$SAMPLE_R1" -I "$SAMPLE_R2" \
       -o "$OUTPUT_DIR/out.R1.fq.gz" -O "$OUTPUT_DIR/out.R2.fq.gz" \
       --reads_to_process 10000 \ # we will only process a sub-sample for this RNAseq demonstration
       --thread 2
 
+# get the rrna datasets and uncompress them
+wget https://github.com/biocore/sortmerna/releases/download/v4.3.4/database.tar.gz
+tar xzf database.tar.gz
 
 # Step 3: Remove rRNA and mitochondrial reads with SortMeRNA
 SORTMERNA_OUT="$OUTPUT_DIR/sortmerna_out"
@@ -62,7 +60,7 @@ sortmerna --ref smr_v4.3_fast_db.fasta \
     --aligned "$SORTMERNA_OUT/aligned"
 
 # Step 2: Run FastQC on trimmed reads
-fastqc "$OUTPUT_DIR/out.R1.fq.gz" "$OUTPUT_DIR/out.R2.fq.gz" \
-        --outdir "$OUTPUT_DIR"
+# fastqc "$OUTPUT_DIR/out.R1.fq.gz" "$OUTPUT_DIR/out.R2.fq.gz" \
+#         --outdir "$OUTPUT_DIR"
 
 
