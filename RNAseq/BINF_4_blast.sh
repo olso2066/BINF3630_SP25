@@ -6,7 +6,7 @@
 #SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
 
-module load ncbi-blast/2.16.0
+module load biocontainers ncbi-blast/2.16.0
 
 # Only do these next steps once
 wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
