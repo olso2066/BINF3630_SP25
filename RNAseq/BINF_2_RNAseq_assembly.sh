@@ -9,10 +9,10 @@
 # Load required modules
 ml biocontainers trinity/2.15.0 samtools
 
-# /anvil/projects/x-bio250083/olsonman_RNAseq
+# Align trimmed reads
 Trinity --seqType fq \
 --left $SCRATCH/RNAseq/out.R1.fq.gz \
 --right $SCRATCH/RNAseq/out.R2.fq.gz \
 --CPU 6 \
---max_memory 150G
-
+--max_memory 150G \
+--output $SCRATCH/RNAseq/trinity_output
