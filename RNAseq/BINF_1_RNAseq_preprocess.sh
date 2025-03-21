@@ -29,15 +29,15 @@ INPUT_DIR="/anvil/projects/x-bio250083/RNAseq_mdg"
 OUTPUT_DIR="$SCRATCH/RNAseq"
 mkdir -p "$OUTPUT_DIR"
 
-# Define sample names - change to your sample names
-# SAMPLE_R1="$INPUT_DIR/mdg_017_L_S17_L004_R1_001.fastq.gz"
-# SAMPLE_R2="$INPUT_DIR/mdg_017_L_S17_L004_R2_001.fastq.gz"
+# Define sample names
+# change to your sample names ####
+SAMPLE_R1="$INPUT_DIR/mdg_017_L_S17_L004_R1_001.fastq.gz"
+SAMPLE_R2="$INPUT_DIR/mdg_017_L_S17_L004_R2_001.fastq.gz"
 
 # Step 1: Subsample and trim with fastp
 fastp -i "$SAMPLE_R1" -I "$SAMPLE_R2" \
       -o "$OUTPUT_DIR/out.R1.fq.gz" -O "$OUTPUT_DIR/out.R2.fq.gz" \
-      --max_reads 10000 \
-      --reads_to_
+      --reads_to_process 10000 \ # we will only process a sub-sample for this RNAseq demonstration
       --thread 2
 
 # Step 2: Run FastQC on trimmed reads
