@@ -8,12 +8,13 @@
 
 ml biocontainers blast/2.13.0
 
-# Only do these next steps once
+# Only do these next steps once - if the blast fails, make sure to 
 wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-gunzip uniprot_sprot.fasta.gz
+mv uniprot_sprot.fasta.gz $SCRATCH/RNAseq/
+gunzip $SCRATCH/RNAseq/uniprot_sprot.fasta.gz
 
 # Build a blasat data base
-makeblastdb -in uniprot_sprot.fasta -dbtype prot
+makeblastdb -in $SCRATCH/RNAseq/uniprot_sprot.fasta -dbtype prot
 
 # do a blastx search
-blastx -query trinity_out_dir.Trinity.fasta -db uniprot_sprot.fasta -out blastx.outfmt6 -evalue 1e-20 -outfmt 0 
+blastx -query $SCRATCH/RNAseq/trinity_out_dir.Trinity.fasta -db $SCRATCH/RNAseq/uniprot_sprot.fasta -out $SCRATCH/RNAseq/blastx.outfmt6 -evalue 1e-20 -outfmt 0 
