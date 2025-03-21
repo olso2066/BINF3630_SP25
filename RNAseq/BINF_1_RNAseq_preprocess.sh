@@ -26,22 +26,22 @@ ml biocontainers fastp/0.23.2 fastqc/0.12.1
 # Set up directories
 #### Change the ouput directory
 INPUT_DIR="/anvil/projects/x-bio250083/RNAseq_mdg"
-OUTPUT_DIR="/anvil/scratch/x-olsonman/om_RNAseq
+OUTPUT_DIR="$SCRATCH/RNAseq"
 mkdir -p "$OUTPUT_DIR"
 
-# Define sample names
-SAMPLE_R1="$INPUT_DIR/mdg_017_L_S17_L004_R1_001.fastq.gz"
-SAMPLE_R2="$INPUT_DIR/mdg_017_L_S17_L004_R2_001.fastq.gz"
+# Define sample names - change to your sample names
+# SAMPLE_R1="$INPUT_DIR/mdg_017_L_S17_L004_R1_001.fastq.gz"
+# SAMPLE_R2="$INPUT_DIR/mdg_017_L_S17_L004_R2_001.fastq.gz"
 
 # Step 1: Subsample and trim with fastp
 fastp -i "$SAMPLE_R1" -I "$SAMPLE_R2" \
-      -o "$OUTPUT_DIR/out17.R1.fq.gz" -O "$OUTPUT_DIR/out17.R2.fq.gz" \
+      -o "$OUTPUT_DIR/out.R1.fq.gz" -O "$OUTPUT_DIR/out.R2.fq.gz" \
       --max_reads 10000 \
       --reads_to_
       --thread 2
 
 # Step 2: Run FastQC on trimmed reads
-fastqc "$OUTPUT_DIR/out17.R1.fq.gz" "$OUTPUT_DIR/out17.R2.fq.gz" \
+fastqc "$OUTPUT_DIR/out.R1.fq.gz" "$OUTPUT_DIR/out.R2.fq.gz" \
         --outdir "$OUTPUT_DIR"
 
 
