@@ -12,6 +12,6 @@ ml bowtie2
 
 # Align reads back to assembly 
 bowtie2-build  trinity_out_dir.Trinity.fasta trinity_out_dir.Trinity.fasta
-bowtie2 -p 10 -q --no-unal -k 20 -x trinity_index -1 out17.R1.fq.gz -2 out17.R2.fq.gz 2>align_stats.txt | \
+bowtie2 -p 10 -q --no-unal -k 20 -x trinity_index -1 clean.R1.fq.gz -2 clean.R2.fq.gz 2>align_stats.txt | \
 
 # samtools view -@10 -Sb -o bowtie2.bam
