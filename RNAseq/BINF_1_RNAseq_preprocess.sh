@@ -1,5 +1,3 @@
-
-  GNU nano 2.9.8                                                                                                                                                      BINF_1_RNAseq_preprocessing.sh                                                                                                                                                                
 #!/bin/bash
 #SBATCH --time=0:10:00
 #SBATCH --job-name=pre-process
