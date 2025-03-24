@@ -14,46 +14,35 @@ Data and analyses for Bioinformatics Spring 2025
 | mdg_023 | Root and Leaf | Drought | Hybrid |
 | mdg_024 | Root and Leaf | Drought | Hybrid |
 
-**Make a directory that's for your work**
+**Go to your scratch directory**
 ``` bash
-# go to the project folder
-cd /anvil/projects/x-bio250083/
-# make a directory based on your ACCESS user name
-mkdir -p YOURUSERNAME
-# go into that folder
-cd YOURUSERNAME
+# go to scratch
+cd $SCRATCH
+# make the RNAseq directory
+mkdir RNAseq
+# go into that directory
+cd RNAseq
+# copy the .sh files in to that directory
+cp /anvil/projects/x-bio250083/RNAseq_sh_files/*.sh ./
 ```
 
-**Editing, copying, and running scripts**
+**Editing for your sample name**
 ``` bash
-# Run an example script
-# Copy an example script
-cp /anvil/projects/x-bio250083/examples/example.sh /anvil/projects/x-bio250083/YOURUSERNAME
-# check to see it's there
-ls
-# check its contents
-less example.sh
-# edit it
-nano example.sh
-# run it
-sbatch example.sh
-# while it's running, check it's status and the status of any other jobs you're running
+nano BINF_1_RNAseq_preprocessing.sh
+## Change your sample name - everything else should stay the same
+## SAMPLE_NAME="mdg_017_L_S17_L004"  # <<< EDIT THIS FOR OTHER SAMPLES
+# Save the nano file close it
+```
+
+**Run the script**
+``` bash
+sbatch BINF_1_RNAseq_preprocessing.sh
 squeue -u$USER
 ```
 
-**Preparing the preprocessing script for your sample**
+**Once the **
 ``` bash
-cd /anvil/projects/x-bio250083/YOURUSERNAME
-# add the first script - open BINF_1_RNAseq_preprocess.sh and copy its contents
-nano BINF_1_RNAseq_preprocess.sh
-# paste in the code
-# IMPORTANT! - make the necessary changes for your files and directories!!!
-```
 
-**Running the preprocessing script**
-``` bash
-# running the script
-sbatch BINF_1_RNAseq_preprocess.sh
 ```
 
 **Repeat for each BINF_x script**
