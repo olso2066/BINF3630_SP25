@@ -1,0 +1,14 @@
+# go to scratch
+cd $SCRATCH
+cd RNAseq
+
+# get the transcriptome
+cp -r /anvil/projects/x-bio250083/qual_checks_RNAseq ./
+
+# go into the directory
+cd qual_checks_RNAseq
+ls
+
+# run the quality control check of the trinity assembly and run busco
+sbatch BINF_qc_busco.sh
+
