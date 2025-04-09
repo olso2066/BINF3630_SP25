@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+install.packages("tximport")
+
+```
+
+
+
+```{r}
+# Load libraries
+library(tximport)
+library(readr)
+library(DESeq2)
+
+# Load sample metadata
+samples <- read_tsv("samples.txt")
+
+# Set up paths and names
+files <- samples$quant
+names(files) <- samples$sample_id
+
+# Load transcript-to-gene map from Trinity
+tx2gene <- read_tsv("Trinity.fasta.gene_trans_map", col_names = c("TXNAME", "GENEID"))
+
+# Import Salmon quantifications
+txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
+
+# Create DESeq2 dataset
+dds <- DESeqDataSetFromTximport(txi, colData = samples, design = ~ species)
+
+# Run DESeq2
+dds <- DESeq(dds)
+
+# Results for syriaca vs speciosa
+res <- results(dds, contrast = c("species", "syriaca", "speciosa"))
+
+# View summary
+summary(res)
+
+# Order by adjusted p-value
+resOrdered <- res[order(res$padj), ]
+
+# Write results
+write.csv(as.data.frame(resOrdered), file = "DESeq2_results_sy_vs_sp.csv")
+
+```
+

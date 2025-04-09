@@ -1,0 +1,22 @@
+{
+    "read_files": "[ /anvil/scratch/x-olsonman/RNAseq/mdg_002_L_S2_L004//clean.R1.fq.gz, /anvil/scratch/x-olsonman/RNAseq/mdg_002_L_S2_L004//clean.R2.fq.gz]",
+    "expected_format": "IU",
+    "compatible_fragment_ratio": 1.0,
+    "num_compatible_fragments": 42392,
+    "num_assigned_fragments": 42392,
+    "num_frags_with_concordant_consistent_mappings": 38990,
+    "num_frags_with_inconsistent_or_orphan_mappings": 3836,
+    "strand_mapping_bias": 0.5134649910233393,
+    "MSF": 0,
+    "OSF": 0,
+    "ISF": 20020,
+    "MSR": 0,
+    "OSR": 0,
+    "ISR": 18970,
+    "SF": 1877,
+    "SR": 1959,
+    "MU": 0,
+    "OU": 0,
+    "IU": 0,
+    "U": 0
+}
