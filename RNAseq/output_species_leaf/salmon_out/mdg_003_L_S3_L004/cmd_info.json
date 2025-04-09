@@ -1,0 +1,11 @@
+{
+    "salmon_version": "1.5.2",
+    "index": "/anvil/scratch/x-olsonman/RNAseq/trinity_output/Trinity.fasta.salmon.idx",
+    "libType": "IU",
+    "mates1": "/anvil/scratch/x-olsonman/RNAseq/mdg_003_L_S3_L004//clean.R1.fq.gz",
+    "mates2": "/anvil/scratch/x-olsonman/RNAseq/mdg_003_L_S3_L004//clean.R2.fq.gz",
+    "output": "/anvil/scratch/x-olsonman/RNAseq/salmon_out/mdg_003_L_S3_L004",
+    "threads": "4",
+    "validateMappings": [],
+    "auxDir": "aux_info"
+}

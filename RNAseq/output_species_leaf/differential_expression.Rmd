@@ -1,0 +1,225 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("tximport")
+BiocManager::install("BiocParallel")
+BiocManager::install("DESeq2")
+BiocManager::install("BiocParallel", lib = .libPaths()[1])
+
+
+options(pkgType = "binary")
+BiocManager::install("BiocParallel")
+
+```
+
+
+
+```{r}
+# Load libraries
+library(tximport)
+library(readr)
+library(DESeq2)
+
+# Load sample metadata
+samples <- read_tsv("samples.txt")
+
+# Set up paths and names
+files <- samples$quant
+names(files) <- samples$sample_id
+
+# Load transcript-to-gene map from Trinity
+#tx2gene <- read_tsv("Trinity.fasta.gene_trans_map", col_names = c("TXNAME", #"GENEID"))
+
+tx2gene <- read.delim("Trinity.fasta.gene_trans_map", header = FALSE)
+tx2gene <- tx2gene[, c(2,1)]  # Flip columns: transcript, gene
+colnames(tx2gene) <- c("TXNAME", "GENEID")
+
+
+txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
+
+# Create DESeq2 dataset
+dds <- DESeqDataSetFromTximport(txi, colData = samples, design = ~ species)
+
+# Run DESeq2
+dds <- DESeq(dds)
+
+# Results for syriaca vs speciosa
+res <- results(dds, contrast = c("species", "syriaca", "speciosa"))
+
+# View summary
+summary(res)
+
+# Order by adjusted p-value
+resOrdered <- res[order(res$padj), ]
+
+# Write results
+write.csv(as.data.frame(resOrdered), file = "DESeq2_results_sy_vs_sp.csv")
+
+```
+
+
+```{r}
+# Load pfam2go, skipping comments
+pfam2go_raw <- readLines("pfam2go.txt")
+pfam2go_clean <- grep("^Pfam:", pfam2go_raw, value = TRUE)
+
+# Parse Pfam ID and GO ID from each line
+pfam_entries <- str_match(pfam2go_clean, "^Pfam:(PF\\d+)\\s+.*>.*GO:.*;\\s*(GO:\\d+)$")
+
+# Remove lines that didn't match
+pfam_entries <- pfam_entries[!is.na(pfam_entries[, 2]), ]
+
+# Create mapping table
+pfam_map <- data.frame(
+  Pfam_ID = pfam_entries[, 2],
+  GO_ID   = pfam_entries[, 3],
+  stringsAsFactors = FALSE
+)
+
+# Check it
+head(pfam_map)
+
+
+```
+
+
+```{r}
+
+res <- results(dds, contrast = c("species", "syriaca", "speciosa"))
+resOrdered <- as.data.frame(res[order(res$padj), ])
+resOrdered$gene_id <- rownames(resOrdered)  # Store rownames as a column
+
+head(resOrdered)
+```
+
+
+```{r}
+annot <- read.delim("trinotate_annotation_report.tsv", sep = "\t", header = TRUE)
+colnames(annot)
+
+head(annot$gene_id)
+head(annot$Pfam)
+```
+
+
+```{r}
+# Get all matches like PF00487.30
+annot$Pfam_IDs <- str_extract_all(annot$Pfam, "PF\\d+\\.\\d+")
+
+# Check the result
+head(annot$Pfam_IDs, 5)
+```
+```{r}
+annot$Pfam_IDs <- lapply(annot$Pfam_IDs, function(x) gsub("\\.\\d+$", "", x))
+
+# Check again
+head(annot$Pfam_IDs, 5)
+
+```
+
+
+```{r}
+library(tidyr)
+library(dplyr)
+
+annot_expanded <- annot %>%
+  unnest(Pfam_IDs) %>%
+  left_join(pfam_map, by = c("Pfam_IDs" = "Pfam_ID")) %>%
+  group_by(gene_id) %>%
+  summarise(GO_terms = paste(unique(GO_ID[!is.na(GO_ID)]), collapse = ";"), .groups = "drop")
+
+```
+
+
+```{r}
+merged_go <- merge(resOrdered, annot_expanded, by = "gene_id", all.x = TRUE)
+#table(is.na(merged_go$GO_terms))
+write.table(merged_go, "cytoscape_DE_GO.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+
+```
+
+
+```{r}
+# Keep just the gene and GO term columns
+go_pairs <- merged_go %>% 
+  filter(!is.na(GO_terms)) %>%
+  select(gene_id, GO_terms)
+
+# Expand into one row per gene-GO combination
+go_expanded <- go_pairs %>%
+  separate_rows(GO_terms, sep = ";")
+
+# Check the result
+head(go_expanded)
+```
+
+```{r}
+go_edges <- inner_join(go_expanded, go_expanded, by = "GO_terms")
+
+```
+
+```{r}
+library(dplyr)
+
+# Remove self-loops (gene paired with itself)
+go_edges <- go_edges %>% filter(gene_id.x != gene_id.y)
+
+# Ensure each pair is unique (no A–B and B–A duplicates)
+go_edges$edge_key <- apply(go_edges[, c("gene_id.x", "gene_id.y")], 1, function(x) paste(sort(x), collapse = "_"))
+go_edges <- go_edges[!duplicated(go_edges$edge_key), ]
+
+# Keep final format
+go_network_edges <- go_edges[, c("gene_id.x", "gene_id.y", "GO_terms")]
+colnames(go_network_edges) <- c("Source", "Target", "GO_term")
+
+# Export to Cytoscape
+write.table(go_network_edges, "go_network_edges_fixed.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+
+```
+
+
+
+
+
+```{r}
+# Start with: genes and GO terms split by semicolon
+go_pairs <- merged_go[!is.na(merged_go$GO_terms), c("gene_id", "GO_terms")]
+
+# Expand to one row per GO term
+go_expanded <- go_pairs %>%
+  tidyr::separate_rows(GO_terms, sep = ";")
+
+# Self-join on GO term to get gene pairs
+go_edges <- merge(go_expanded, go_expanded, by = "GO_terms")
+
+# Remove self-loops
+go_edges <- go_edges[go_edges$gene_id.x != go_edges$gene_id.y, ]
+
+# Ensure undirected uniqueness (A–B = B–A)
+go_edges$pair <- apply(go_edges[, c("gene_id.x", "gene_id.y")], 1, function(x) paste(sort(x), collapse = "_"))
+go_edges <- go_edges[!duplicated(go_edges$pair), ]
+
+# Keep only source, target, and the shared GO term
+go_network_edges <- go_edges[, c("gene_id.x", "gene_id.y", "GO_terms")]
+colnames(go_network_edges) <- c("Source", "Target", "GO_term")
+
+# Write for Cytoscape
+write.table(go_network_edges, "go_network_edges_fixed.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+```
+
+
+```{r}
+sum(!is.na(merged_go$GO_terms))
+```
+
+
+

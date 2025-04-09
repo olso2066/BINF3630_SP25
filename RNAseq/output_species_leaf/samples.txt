@@ -1,0 +1,8 @@
+sample_id	species	quant
+mdg_001_L	speciosa	salmon_out/mdg_001_L_S1_L004/quant.sf
+mdg_002_L	speciosa	salmon_out/mdg_002_L_S2_L004/quant.sf
+mdg_003_L	speciosa	salmon_out/mdg_003_L_S3_L004/quant.sf
+mdg_004_L	speciosa	salmon_out/mdg_004_L_S4_L004/quant.sf
+mdg_009_L	syriaca	salmon_out/mdg_009_L_S9_L004/quant.sf
+mdg_010_L	syriaca	salmon_out/mdg_010_L_S10_L004/quant.sf
+mdg_011_L	syriaca	salmon_out/mdg_011_L_S11_L004/quant.sf
